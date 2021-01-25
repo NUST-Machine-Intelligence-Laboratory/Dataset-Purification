@@ -1,12 +1,12 @@
-# Learning from Noisy Web Images for Fine-Grained Visual Recognition through Dataset Purification
+# Robust Learning from Noisy Web Images via Data Purification for Fine-Grained Recognition
 
 Introduction
 ------------
-This is the source code for our paper **Learning from Noisy Web Images for Fine-Grained Visual Recognition through Dataset Purification**
+This is the source code for our paper **Robust Learning from Noisy Web Images via Data Purification for Fine-Grained Recognition**
 
 Network Architecture
 --------------------
-The architecture of our proposed peer-learning model is as follows
+The architecture of our proposed model is as follows
 ![network](network.png)
 
 Installation
@@ -41,7 +41,7 @@ The code is currently tested only on GPU
        ln -s web-aircraft aircraft
        ```
 
-      - Modify `CUDA_VISIBLE_DEVICES` to proper cuda device id and `data_base` to proper dataset in  ``` run.sh ```
+      - Modify `CUDA_VISIBLE_DEVICES` to proper cuda device id and `data_base` to proper dataset in  ``` run_train_resnet.sh ```
       
       - Activate virtual environment(e.g. conda) and then run the script ```bash run_train_resnet.sh``` to train a resnet50 model.
       
