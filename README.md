@@ -45,4 +45,7 @@ The code is currently tested only on GPU
       
       - Activate virtual environment(e.g. conda) and then run the script ```bash run_train_resnet.sh``` to train a resnet50 model.
       
+* **Attentions**     
+    - The threshold _thr_ should be set according to the histogram of angles. 60 or 61 is a good choice for CUB200, yet may not be the best.
+    - Each step has effects on the final performance, especially step 2. If some erorr occurs in one step, the final performance will drop.
     ![table](performance.png)

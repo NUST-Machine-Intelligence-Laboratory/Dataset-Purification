@@ -16,7 +16,7 @@ plt.rcParams['font.serif'] = ['Times New Roman'] + plt.rcParams['font.serif']
 # plt.rcParams['axes.linewidth'] = 2
 
 # 计算所有样本的与类别中心的cos距离
-def cos_compute(data_dir, net=None, model_dir='model/resnet50sub_best.pth',n_class=200):
+def cos_compute(data_dir, net=None, model_dir='model/step1/resnet50_subbest.pth',n_class=200):
     torch.manual_seed(0)
     torch.cuda.manual_seed(0)
 
@@ -85,11 +85,14 @@ def cos_compute(data_dir, net=None, model_dir='model/resnet50sub_best.pth',n_cla
             tmp=[path[i], int(y[i]), float(cos), d]  # 路径，标签，cos
             data.append(tmp)
 
+    if not os.path.isdir(os.path.join(os.popen('pwd').read().strip(),'pkls')):
+        os.mkdir(os.path.join(os.popen('pwd').read().strip(), 'pkls'))
+
     f = open('pkls/data.pkl', 'wb')
     pickle.dump(data, f)
     f.close()
 
-# 画直方图并生成 noise_list.txt 名单
+# 画直方图并生成 clean_list 名单
 def noise_identify(thr=60):
     f = open('pkls/data.pkl', 'rb')
     data = pickle.load(f)
@@ -148,55 +151,21 @@ def noise_identify(thr=60):
     f.close()
 
 
-def gen_ind_list(pkl='pkls/relabel.pkl', number=500, record = False):
+def gen_ind_list(pkl='pkls/relabel.pkl', number=500):
     f = open(pkl, 'rb')
     data = pickle.load(f)
     f.close()
-
     data.sort(key=lambda x: x[1], reverse=True)
-    score = [x[1] for x in data]
-    score = np.array(score)
-    dor = pd.DataFrame(score)
-    dor.hist(bins=100, density=False, alpha=0.5)
-    plt.grid(axis="y", linestyle='--')
-
-    plt.title('')
-    plt.show()
-
     relabel_list=[]
     f = open('dataset/relabel_list_thr60_{}.pkl'.format(number), 'wb')
-    images=[]
-
     for i in range(number):
         # path, pseudo label
         tmp = [data[i][0], int(data[i][2])]
         relabel_list.append(tmp)
-
-        if record:
-            image = Image.open(data[i][0])
-            image = image.convert('RGB')
-            image = image.resize((224, 224), Image.ANTIALIAS)
-            images.append(image)
-
     pickle.dump(relabel_list, f)
     f.close()
 
-    if record:
-        UNIT_SIZE = 224  #
-        TARGET_WIDTH = UNIT_SIZE * 6  # 拼接完后的横向长度
-        TARGET_Height = UNIT_SIZE * 8
-        target = Image.new('RGB', (TARGET_WIDTH, TARGET_Height))
-        count = 0
-        for t in range(int(len(images) / 48)):
-            for i in range(6):
-                for j in range(8):
-                    target.paste(images[count], (UNIT_SIZE * i, UNIT_SIZE * j))
-                    count += 1
-            quality_value = 100  # quality来指定生成图片的质量，范围是0～100
-            target.save('image/' + '{}.jpg'.format(t), quality=quality_value)
-
-
 if __name__ == '__main__':
     # cos_compute()
-    noise_identify()
-    # gen_ind_list()
+    # noise_identify()
+    gen_ind_list()

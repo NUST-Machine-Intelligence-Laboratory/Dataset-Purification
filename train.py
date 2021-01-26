@@ -260,14 +260,14 @@ class Manager_AM(object):
         print('Best at epoch %d, test accuracy %f' % (best_epoch, best_accuracy))
         print('-----------------------------------------------------------------')
 
-    def ood_detection(self, ss_path='model/resnet18_ssbest.pth', model_path='model/resnet50_subbest.pth'):
+    def ood_detection(self, noise_list='dataset/noise_list_thr61.pkl', ss_path='model/step3/resnet18_ssbest.pth', model_path='model/step3/resnet50_subbest.pth'):
         test_transform = torchvision.transforms.Compose([
             torchvision.transforms.Resize(size=448),
             torchvision.transforms.CenterCrop(size=448),
             torchvision.transforms.ToTensor(),
             torchvision.transforms.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225))
         ])
-        noise_data = dataset_from_list(self._data_list, transform=test_transform)
+        noise_data = dataset_from_list(noise_list, transform=test_transform)
         noise_loader=DataLoader(noise_data, batch_size=16, shuffle=False, num_workers=4, pin_memory=True)
 
         self._net.load_state_dict(torch.load(ss_path))
@@ -391,13 +391,14 @@ if __name__ == '__main__':
             'step': args.step,
             'smooth':args.smooth
         }
-    manager = Manager_AM(options)
     if args.step == 1 or (args.step == 3 and args.net == 'resnet50_sub') or args.step == 4:
+        manager = Manager_AM(options)
         manager.train()
     elif args.step == 2 :
-        cos_compute(net=args.net, data_dir=args.data_base, model_dir=path + '/resnet50sub_best.pth')
-        noise_identify()
+        cos_compute(net=args.net, data_dir=args.data_base, model_dir=path + '/resnet50_subbest.pth')
+        noise_identify(thr=61)
     elif args.step == 3:
+        manager = Manager_AM(options)
         manager.train_self_supervised()
         manager.ood_detection()
         gen_ind_list()
