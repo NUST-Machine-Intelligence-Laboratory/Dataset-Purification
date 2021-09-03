@@ -21,12 +21,6 @@ The code is currently tested only on GPU
         ```
         wget https://wsnfg.oss-cn-hongkong.aliyuncs.com/web-bird.tar.gz
         tar -xvf web-bird.tar.gz
-      
-        # optional
-        wget https://wsnfg.oss-cn-hongkong.aliyuncs.com/web-car.tar.gz
-        wget https://wsnfg.oss-cn-hongkong.aliyuncs.com/web-aircraft.tar.gz
-        tar -xvf web-car.tar.gz
-        tar -xvf aircraft-car.tar.gz
         ```
 * **Source Code**
 
@@ -35,10 +29,6 @@ The code is currently tested only on GPU
       - Choose a dataset, create soft link to dataset by
        ```
        ln -s web-bird bird
-      
-       # optional
-       ln -s web-car car
-       ln -s web-aircraft aircraft
        ```
 
       - Modify `CUDA_VISIBLE_DEVICES` to proper cuda device id and `data_base` to proper dataset in  ``` run_train_resnet.sh ```
